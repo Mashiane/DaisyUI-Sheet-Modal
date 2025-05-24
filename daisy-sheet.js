@@ -172,10 +172,6 @@ class DaisySheetModal extends HTMLElement {
         const content = document.createElement('div');
         content.id = `${id}content`;
         content.className = 'px-6 pb-6 flex-1 overflow-auto';
-        // Add a default slot for content projection
-        const slot = document.createElement('slot');
-        // Remove the name attribute to make it a default slot
-        content.appendChild(slot);
         modal.appendChild(handleHost);
         modal.appendChild(content);
         // Add style
