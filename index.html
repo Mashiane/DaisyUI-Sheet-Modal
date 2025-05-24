@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>                
+        <title>Essential JS 2 - Ribbon</title>
+        <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+        <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+        <script src="daisy-sheet.js"></script>
+    </head>
+  <body>
+    <div class="flex flex-col items-center min-h-screen">
+      <button id="openSheet" class="btn btn-primary mb-4">Open Sheet Modal</button>
+      <button id="closeSheet" class="btn btn-secondary mb-4">Close Sheet Modal</button>
+      <daisy-sheet id="sheet1">
+            <template slot="content">
+                <p>This content goes inside the sheet modal.</p>
+                <button id="sheetInnerBtn" class="btn btn-accent mt-4">Sheet Inner Button</button>
+            </template>
+      </daisy-sheet>
+    </div>
+    <script>
+      const sheet = document.getElementById('sheet1');
+      document.getElementById('openSheet').addEventListener('click', function() {
+        // Generate a random hex color for the handle
+        const randomColor = '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
+        //sheet.handleBg = randomColor;
+        //sheet.showBackdrop = true;
+        // Generate a random hex color for the modal background
+        const randomBg = '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
+        //sheet.backgroundColor = randomBg;
+        //sheet.handleVisible = !sheet.handleVisible;
+        sheet.show();
+      });
+      document.getElementById('closeSheet').addEventListener('click', function() {
+        sheet.hide();
+      });
+      // Add click event for the inner button
+       document.getElementById('sheetInnerBtn').addEventListener('click', function() {
+          alert('Sheet inner button clicked!');
+      });
+    </script>
+  </body>
+</html>
