@@ -16,9 +16,9 @@ class DaisySheetModal extends HTMLElement {
 
     connectedCallback() {
         // Only render structure once
-        if (!this._initialized) {
-            this._renderStructure();
-            this._initialized = true;
+        if (!this._structureInitialized) {
+            this._renderStructure(); // Render modal structure (with slot) first
+            this._structureInitialized = true;
         }
         this._cacheElements();
         this._applyDynamicStyles();
@@ -32,6 +32,18 @@ class DaisySheetModal extends HTMLElement {
         if (this._escListener) {
             document.removeEventListener('keydown', this._escListener);
             this._escListener = null;
+        }
+        // Remove drag and backdrop event listeners to prevent memory leaks
+        if (this._handle) {
+            this._handle.removeEventListener('mousedown', this._onDrag);
+            this._handle.removeEventListener('touchstart', this._onDrag);
+        }
+        document.removeEventListener('mousemove', this._onDragMove);
+        document.removeEventListener('mouseup', this._onDragEnd);
+        document.removeEventListener('touchmove', this._onDragMove);
+        document.removeEventListener('touchend', this._onDragEnd);
+        if (this._backdrop) {
+            this._backdrop.onclick = null;
         }
     }
 
@@ -188,8 +200,7 @@ class DaisySheetModal extends HTMLElement {
             will-change: opacity;
         }
         `;
-        // Clear only the light DOM children (not the custom element itself)
-        while (this.firstChild) this.removeChild(this.firstChild);
+        // Append new structure after user content (template/slotted)
         this.appendChild(backdrop);
         this.appendChild(modal);
         this.appendChild(style);
@@ -309,6 +320,8 @@ class DaisySheetModal extends HTMLElement {
         this._currentBreakpoint = closest;
         // Restore transition for snap animation
         this._modal.style.transition = '';
+        // Remove dragging class
+        this._modal.classList.remove('dragging');
         this._applyDynamicStyles();
         document.removeEventListener('mousemove', this._onDragMove);
         document.removeEventListener('mouseup', this._onDragEnd);
